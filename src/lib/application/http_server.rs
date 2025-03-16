@@ -1,4 +1,4 @@
-use crate::application::app::App;
+use crate::application::app::AppState;
 use crate::application::drone::router::drone_router;
 use crate::domain::contracts::drone::DroneService;
 use crate::env::Env;
@@ -19,7 +19,7 @@ impl HttpServer {
     where
         D: DroneService + Clone + Send + Sync + 'static,
     {
-        let app = App::new(drone_service);
+        let state = AppState::new(drone_service);
 
         let listener = TcpListener::bind(format!("0.0.0.0:{}", env.port))
             .await
@@ -29,8 +29,8 @@ impl HttpServer {
         let router = Router::new()
             .route("/", get(|| async { "Hello, World!" }))
             .nest("", drone_router())
-            .layer(Extension(Arc::clone(&app.drone_service)))
-            .with_state(app);
+            .layer(Extension(Arc::clone(&state.drone_service)))
+            .with_state(state);
 
         Ok(Self {
             router,

@@ -1,15 +1,15 @@
-use crate::domain::contracts::drone::DroneService;
 use std::sync::Arc;
+use crate::domain::contracts::drone::DroneService;
 
 #[derive(Debug, Clone)]
-pub struct App<D>
+pub struct AppState<D>
 where
     D: DroneService,
 {
     pub drone_service: Arc<D>,
 }
 
-impl<D> App<D>
+impl<D> AppState<D>
 where
     D: DroneService,
 {

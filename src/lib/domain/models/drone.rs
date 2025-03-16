@@ -8,6 +8,6 @@ pub struct Drone {
 
 impl Drone {
     pub fn new(id: i32, model: String) -> Self {
-      Self { id, model }
+        Self { id, model }
     }
 }

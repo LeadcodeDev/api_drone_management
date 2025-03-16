@@ -1,6 +1,5 @@
 use clap::Parser;
 use drone::application::http_server::HttpServer;
-use drone::domain::contracts::drone::DroneService;
 use drone::domain::services::drone_service::DroneServiceImpl;
 use drone::env::Env;
 use drone::infrastructure::db::postgres::Postgres;
@@ -18,10 +17,7 @@ async fn main() {
     // Init services (repositories, services, etc)
     let database = Arc::new(Postgres::new(Arc::clone(&env)).await.unwrap());
     let drone_repository = Arc::new(PostgresDroneRepository::new(Arc::clone(&database)));
-    let drone_service = Arc::new(DroneServiceImpl::new(Arc::clone(&drone_repository)));
-
-    let drones = drone_service.get_all().await.unwrap();
-    println!("{:?}", drones);
+    let drone_service = Arc::new(DroneServiceImpl::new(&drone_repository));
 
     // Init webserver
     let server = HttpServer::new(Arc::clone(&env), Arc::clone(&drone_service));
