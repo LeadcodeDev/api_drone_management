@@ -1,7 +1,7 @@
 use crate::domain::contracts::drone::DroneRepository;
 use crate::domain::models::drone::Drone;
 use crate::infrastructure::db::postgres::Postgres;
-use sqlx::{Executor, Row};
+use sqlx::{Row};
 use std::sync::Arc;
 
 #[derive(Debug, Clone)]
@@ -65,5 +65,15 @@ impl DroneRepository for PostgresDroneRepository {
         );
 
         Ok(drone)
+    }
+  
+    async fn delete(&self, id: i32) -> Result<(), anyhow::Error> {
+        let pool = self.db.get_pool();
+        sqlx::query("DELETE FROM drones WHERE id = $1")
+            .bind(id)
+            .execute(&*pool)
+            .await?;
+
+        Ok(())
     }
 }

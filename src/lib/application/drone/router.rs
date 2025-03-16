@@ -1,6 +1,7 @@
 use crate::domain::contracts::drone::DroneService;
 use axum::Router;
 use axum_extra::routing::RouterExt;
+use crate::application::drone::handlers::delete_drones::delete;
 use crate::application::drone::handlers::fetch_drones::index;
 use crate::application::drone::handlers::store_drones::store;
 use crate::application::drone::handlers::update_drones::update;
@@ -14,8 +15,5 @@ where
     .typed_get(index::<T>)
     .typed_post(store::<T>)
     .typed_put(update::<T>)
-    // .route("/drones/:id", get(show::<T>))
-    // .route("/drones", post(store::<T>))
-    // .route("/drones/:id", put(update::<T>))
-    // .route("/drones/:id", delete(destroy::<T>))
+    .typed_delete(delete::<T>)
 }

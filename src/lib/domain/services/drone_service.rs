@@ -33,4 +33,8 @@ where
     async fn update(&self, id: i32, model: String, capacity: i32) -> Result<Drone, anyhow::Error> {
         self.drone_repository.update(id, model, capacity).await
     }
+  
+    async fn delete(&self, id: i32) -> Result<(), anyhow::Error> {
+        self.drone_repository.delete(id).await
+    }
 }
