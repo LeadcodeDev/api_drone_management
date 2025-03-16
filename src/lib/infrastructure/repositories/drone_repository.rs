@@ -21,10 +21,10 @@ impl DroneRepository for PostgresDroneRepository {
         let rows = sqlx::query("SELECT * FROM drones")
             .fetch_all(&*pool)
             .await?;
-      
+
         let drones = rows
             .iter()
-            .map(|row| Drone::new(row.get("id"), row.get("model")))
+            .map(|row| Drone::new(row.get("id"), row.get("model"), row.get("capacity")))
             .collect();
 
         Ok(drones)
@@ -32,15 +32,37 @@ impl DroneRepository for PostgresDroneRepository {
 
     async fn store(&self, model: String, capacity: i32) -> Result<Drone, anyhow::Error> {
         let pool = self.db.get_pool();
-        let result = sqlx::query(
-            "INSERT INTO drones (model, capacity) VALUES ($1, $2) RETURNING *",
-        )
-        .bind(&model)
-        .bind(capacity)
-        .fetch_one(&*pool)
-        .await?;
+        let result =
+            sqlx::query("INSERT INTO drones (model, capacity) VALUES ($1, $2) RETURNING *")
+                .bind(&model)
+                .bind(capacity)
+                .fetch_one(&*pool)
+                .await?;
 
-        let drone = Drone::new(result.get("id"), result.get("model"));
+        let drone = Drone::new(
+            result.get("id"),
+            result.get("model"),
+            result.get("capacity"),
+        );
+
+        Ok(drone)
+    }
+
+    async fn update(&self, id: i32, model: String, capacity: i32) -> Result<Drone, anyhow::Error> {
+        let pool = self.db.get_pool();
+        let result =
+            sqlx::query("UPDATE drones SET model = $1, capacity = $2 WHERE id = $3 RETURNING *")
+                .bind(&model)
+                .bind(capacity)
+                .bind(id)
+                .fetch_one(&*pool)
+                .await?;
+
+        let drone = Drone::new(
+            result.get("id"),
+            result.get("model"),
+            result.get("capacity"),
+        );
 
         Ok(drone)
     }

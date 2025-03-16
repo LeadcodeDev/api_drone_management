@@ -4,10 +4,11 @@ use serde::{Deserialize, Serialize};
 pub struct Drone {
     pub id: i32,
     pub model: String,
+  pub capacity: i32,
 }
 
 impl Drone {
-    pub fn new(id: i32, model: String) -> Self {
-        Self { id, model }
+    pub fn new(id: i32, model: String, capacity: i32) -> Self {
+        Self { id, model, capacity }
     }
 }
