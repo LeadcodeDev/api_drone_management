@@ -1,6 +1,6 @@
 use crate::application::http::errors::HttpError;
 use crate::application::http::responses::Response;
-use crate::domain::contracts::drone::DroneService;
+use crate::domain::contracts::drone::{DronePayload, DroneService};
 use crate::domain::models::drone::Drone;
 use axum::{Extension, Json};
 use axum_extra::routing::TypedPath;
@@ -26,7 +26,10 @@ pub async fn store<T: DroneService>(
     Json(payload): Json<StoreDroneRequest>,
 ) -> Result<Response<StoreDroneResponse>, HttpError> {
     drone_service
-        .store(payload.model, payload.capacity)
+        .store(DronePayload {
+            model: payload.model,
+            capacity: payload.capacity,
+        })
         .await
         .map_err(HttpError::from)
         .map(|drone| Response::created(StoreDroneResponse(drone)))

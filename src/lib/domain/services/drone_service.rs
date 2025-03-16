@@ -1,4 +1,4 @@
-use crate::domain::contracts::drone::{DroneRepository, DroneService};
+use crate::domain::contracts::drone::{DronePayload, DroneRepository, DroneService};
 use crate::domain::models::drone::Drone;
 
 #[derive(Debug, Clone)]
@@ -26,14 +26,18 @@ where
         self.drone_repository.get_all().await
     }
 
-    async fn store(&self, model: String, capacity: i32) -> Result<Drone, anyhow::Error> {
-        self.drone_repository.store(model, capacity).await
+    async fn get_by_id(&self, id: i32) -> Result<Drone, anyhow::Error> {
+        self.drone_repository.get_by_id(id).await
     }
 
-    async fn update(&self, id: i32, model: String, capacity: i32) -> Result<Drone, anyhow::Error> {
-        self.drone_repository.update(id, model, capacity).await
+    async fn store(&self, payload: DronePayload) -> Result<Drone, anyhow::Error> {
+        self.drone_repository.store(payload).await
     }
-  
+
+    async fn update(&self, id: i32, payload: DronePayload) -> Result<Drone, anyhow::Error> {
+        self.drone_repository.update(id, payload).await
+    }
+
     async fn delete(&self, id: i32) -> Result<(), anyhow::Error> {
         self.drone_repository.delete(id).await
     }

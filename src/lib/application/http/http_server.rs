@@ -1,4 +1,5 @@
 use crate::application::drone::router::drone_router;
+use crate::application::http::app_state::AppState;
 use crate::domain::contracts::drone::DroneService;
 use crate::env::Env;
 use anyhow::Context;
@@ -6,7 +7,6 @@ use axum::routing::get;
 use axum::{Extension, Router};
 use std::sync::Arc;
 use tokio::net::TcpListener;
-use crate::application::http::app_state::AppState;
 
 pub struct HttpServer {
     env: Arc<Env>,
@@ -24,7 +24,7 @@ impl HttpServer {
         let listener = TcpListener::bind(format!("0.0.0.0:{}", env.port))
             .await
             .with_context(|| format!("Failed to bind to port {}", env.port))
-            .expect("TODO: panic message");
+            .expect("Failed to bind to port");
 
         let router = Router::new()
             .route("/", get(|| async { "Hello, World!" }))
@@ -44,6 +44,7 @@ impl HttpServer {
             "Starting HTTP server on {}:{}",
             self.env.host, self.env.port
         );
+
         axum::serve(self.listener, self.router)
             .await
             .context("Http server error")?;

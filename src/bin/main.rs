@@ -8,14 +8,16 @@ use std::sync::Arc;
 
 #[tokio::main]
 async fn main() {
-    println!("Hello, world!");
-
-    // Validate environment
     dotenv::dotenv().ok();
     let env = Arc::new(Env::parse());
 
-    // Init services (repositories, services, etc)
-    let database = Arc::new(Postgres::new(Arc::clone(&env)).await.unwrap());
+    let database = match Postgres::new(Arc::clone(&env)).await {
+        Ok(database) => Arc::new(database),
+        Err(err) => {
+            panic!("Failed to connect to database: {:?}", err);
+        }
+    };
+
     let drone_repository = PostgresDroneRepository::new(Arc::clone(&database));
     let drone_service = Arc::new(DroneServiceImpl::new(drone_repository));
 
@@ -24,5 +26,5 @@ async fn main() {
         .await
         .unwrap();
 
-    server.start().await.expect("TODO: panic message");
+    server.start().await.expect("Failed to start server");
 }

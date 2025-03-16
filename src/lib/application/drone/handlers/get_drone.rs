@@ -1,6 +1,7 @@
 use crate::application::http::errors::HttpError;
 use crate::application::http::responses::Response;
 use crate::domain::contracts::drone::DroneService;
+use crate::domain::models::drone::Drone;
 use axum::Extension;
 use axum_extra::routing::TypedPath;
 use serde::{Deserialize, Serialize};
@@ -8,15 +9,18 @@ use std::sync::Arc;
 
 #[derive(Serialize, Deserialize, TypedPath)]
 #[typed_path("/drones/{id}")]
-pub struct DeleteDronesRoute(i32);
+pub struct GetDroneRoute(i32);
 
-pub async fn delete<T: DroneService>(
-  DeleteDronesRoute(id): DeleteDronesRoute,
+#[derive(Debug, Clone, Serialize)]
+pub struct GetDroneResponse(Drone);
+
+pub async fn get<T: DroneService>(
+    GetDroneRoute(id): GetDroneRoute,
     Extension(drone_service): Extension<Arc<T>>,
-) -> Result<Response<()>, HttpError> {
+) -> Result<Response<GetDroneResponse>, HttpError> {
     drone_service
-        .delete(id)
+        .get_by_id(id)
         .await
         .map_err(HttpError::from)
-        .map(|_| Response::ok(()))
+        .map(|drone| Response::ok(GetDroneResponse(drone)))
 }
