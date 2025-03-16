@@ -19,7 +19,9 @@ impl HttpServer {
     where
         D: DroneService + Clone + Send + Sync + 'static,
     {
-        let state = AppState::new(drone_service);
+        let state = AppState {
+            drone_service: Arc::clone(&drone_service),
+        };
 
         let listener = TcpListener::bind(format!("0.0.0.0:{}", env.port))
             .await

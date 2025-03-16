@@ -1,9 +1,15 @@
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
+use thiserror::Error;
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Ord, PartialOrd)]
 pub struct Drone {
     pub id: i32,
     pub model: String,
+}
+
+#[derive(Debug, Clone, Error)]
+pub enum DroneError {
+    #[error("Internal server error: {0}")]
+    InternalServerError(String),
 }
 
 impl Drone {

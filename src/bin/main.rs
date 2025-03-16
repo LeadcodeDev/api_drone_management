@@ -7,7 +7,7 @@ use drone::infrastructure::repositories::drone_repository::PostgresDroneReposito
 use std::sync::Arc;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), anyhow::Error> {
     println!("Hello, world!");
 
     // Validate environment
@@ -16,10 +16,12 @@ async fn main() {
 
     // Init services (repositories, services, etc)
     let database = Arc::new(Postgres::new(Arc::clone(&env)).await.unwrap());
-    let drone_repository = Arc::new(PostgresDroneRepository::new(Arc::clone(&database)));
-    let drone_service = Arc::new(DroneServiceImpl::new(&drone_repository));
+    let drone_repository = PostgresDroneRepository::new(Arc::clone(&database));
+    let drone_service = Arc::new(DroneServiceImpl::new(drone_repository));
 
     // Init webserver
-    let server = HttpServer::new(Arc::clone(&env), Arc::clone(&drone_service));
-    server.start();
+    let server = HttpServer::new(Arc::clone(&env), drone_service.clone()).await?;
+    server.start().await?;
+
+    Ok(())
 }

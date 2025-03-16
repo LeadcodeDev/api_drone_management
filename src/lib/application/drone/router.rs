@@ -1,17 +1,13 @@
 use crate::application::app::AppState;
-use crate::application::drone::drone_controller::{destroy, index, show, store, update};
 use crate::domain::contracts::drone::DroneService;
-use axum::routing::{delete, get, post, put};
 use axum::Router;
+use axum_extra::routing::RouterExt;
+
+use super::drone_controller::get_drones;
 
 pub fn drone_router<T>() -> Router<AppState<T>>
 where
-    T: DroneService
+    T: DroneService,
 {
-  Router::new()
-    .route("/drones", get(index::<T>))
-    .route("/drones/:id", get(show::<T>))
-    .route("/drones", post(store::<T>))
-    .route("/drones/:id", put(update::<T>))
-    .route("/drones/:id", delete(destroy::<T>))
+    Router::new().typed_get(get_drones::<T>)
 }

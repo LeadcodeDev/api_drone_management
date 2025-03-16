@@ -1,5 +1,7 @@
+use std::sync::Arc;
+
 use crate::domain::contracts::drone::{DroneRepository, DroneService};
-use crate::domain::models::drone::Drone;
+use crate::domain::models::drone::{Drone, DroneError};
 
 #[derive(Debug, Clone)]
 pub struct DroneServiceImpl<T>
@@ -20,9 +22,9 @@ where
 
 impl<T> DroneService for DroneServiceImpl<T>
 where
-    T: DroneRepository + Copy + Send + Sync + 'static,
+    T: DroneRepository,
 {
-    async fn get_all(&self) -> Result<Vec<Drone>, anyhow::Error> {
+    async fn get_all(&self) -> Result<Vec<Drone>, DroneError> {
         self.drone_repository.get_all().await
     }
 }

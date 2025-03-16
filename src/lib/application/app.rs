@@ -1,5 +1,5 @@
-use std::sync::Arc;
 use crate::domain::contracts::drone::DroneService;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct AppState<D>
