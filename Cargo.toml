@@ -14,6 +14,7 @@ name = "drone"
 [dependencies]
 anyhow = "1.0.97"
 axum = { version = "0.8.1", features = ["macros"] }
+axum-extra = { version = "0.10.0", features = ["typed-header", "typed-routing"] }
 clap = { version = "4.5.32", features = ["derive", "env"] }
 dotenv = "0.15.0"
 serde = { version = "1.0.219", features = ["derive"] }

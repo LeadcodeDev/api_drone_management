@@ -1,4 +1,3 @@
-use crate::application::app::AppState;
 use crate::application::drone::router::drone_router;
 use crate::domain::contracts::drone::DroneService;
 use crate::env::Env;
@@ -7,6 +6,7 @@ use axum::routing::get;
 use axum::{Extension, Router};
 use std::sync::Arc;
 use tokio::net::TcpListener;
+use crate::application::http::app_state::AppState;
 
 pub struct HttpServer {
     env: Arc<Env>,
@@ -17,7 +17,7 @@ pub struct HttpServer {
 impl HttpServer {
     pub async fn new<D>(env: Arc<Env>, drone_service: Arc<D>) -> anyhow::Result<Self>
     where
-        D: DroneService + Clone + Send + Sync + 'static,
+        D: DroneService,
     {
         let state = AppState::new(drone_service);
 
@@ -28,7 +28,7 @@ impl HttpServer {
 
         let router = Router::new()
             .route("/", get(|| async { "Hello, World!" }))
-            .nest("", drone_router())
+            .merge(drone_router())
             .layer(Extension(Arc::clone(&state.drone_service)))
             .with_state(state);
 

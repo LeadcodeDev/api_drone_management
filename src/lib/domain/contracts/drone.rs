@@ -1,10 +1,20 @@
 use crate::domain::models::drone::Drone;
 use std::future::Future;
 
-pub trait DroneRepository {
-    fn get_all(&self) -> impl Future<Output = Result<Vec<Drone>, anyhow::Error>>;
+pub trait DroneRepository: Clone + Send + Sync + 'static {
+    fn get_all(&self) -> impl Future<Output = Result<Vec<Drone>, anyhow::Error>> + Send;
+    fn store(
+        &self,
+        model: String,
+        capacity: i32,
+    ) -> impl Future<Output = Result<Drone, anyhow::Error>> + Send;
 }
 
 pub trait DroneService: Clone + Send + Sync + 'static {
-    fn get_all(&self) -> impl Future<Output = Result<Vec<Drone>, anyhow::Error>>;
+    fn get_all(&self) -> impl Future<Output = Result<Vec<Drone>, anyhow::Error>> + Send;
+    fn store(
+        &self,
+        model: String,
+        capacity: i32,
+    ) -> impl Future<Output = Result<Drone, anyhow::Error>> + Send;
 }

@@ -2,6 +2,7 @@ use crate::env::Env;
 use sqlx::PgPool;
 use std::sync::Arc;
 
+#[derive(Debug, Clone)]
 pub struct Postgres {
     pub pool: Arc<PgPool>,
 }
