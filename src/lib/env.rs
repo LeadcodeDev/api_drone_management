@@ -10,4 +10,10 @@ pub struct Env {
 
     #[clap(env)]
     pub port: u16,
+
+    #[clap(env)]
+    pub auth_service_url: String,
+
+    #[clap(env)]
+    pub keycloak_client_secret: String,
 }
