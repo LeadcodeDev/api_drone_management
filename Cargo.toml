@@ -18,7 +18,9 @@ axum-extra = { version = "0.10.0", features = ["typed-header", "typed-routing"] 
 clap = { version = "4.5.32", features = ["derive", "env"] }
 dotenv = "0.15.0"
 serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.140"
 sqlx = { version = "0.8.3", features = ["macros", "postgres", "runtime-tokio", "runtime-tokio-native-tls", "time", "uuid"] }
 tokio = { version = "1.44.0", features = ["full"] }
-thiserror = "2.0.12"
+futures = "0.3.31"
+futures-util = "0.3.31"
+tower = "0.5.2"
+reqwest = { version = "0.12.15", features = ["json"] }
